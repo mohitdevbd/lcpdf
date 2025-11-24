@@ -19,7 +19,7 @@ const SectionCard: React.FC<{ title: string; children: React.ReactNode; colorCla
   </div>
 );
 
-const DetailRow: React.FC<{ label: string; value?: string | null; isCode?: boolean }> = ({ label, value, isCode }) => {
+const DetailRow: React.FC<{ label: string; value?: string | null; isCode?: boolean; multiline?: boolean }> = ({ label, value, isCode, multiline }) => {
   const [copied, setCopied] = useState(false);
 
   if (!value) return null;
@@ -33,13 +33,13 @@ const DetailRow: React.FC<{ label: string; value?: string | null; isCode?: boole
   return (
     <div className="flex flex-col py-2 border-b border-slate-50 last:border-0 group">
       <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">{label}</span>
-      <div className="flex items-center gap-2">
-        <span className={`text-sm text-slate-800 font-medium truncate ${isCode ? 'font-mono bg-slate-50 px-2 py-0.5 rounded w-fit' : ''}`}>
+      <div className={`flex gap-2 ${multiline ? 'items-start' : 'items-center'}`}>
+        <span className={`text-sm text-slate-800 font-medium ${multiline ? 'break-words whitespace-pre-wrap flex-1' : 'truncate'} ${isCode ? 'font-mono bg-slate-50 px-2 py-0.5 rounded w-fit' : ''}`}>
           {value}
         </span>
         <button 
           onClick={handleCopy}
-          className={`p-1.5 rounded-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-100 ${
+          className={`p-1.5 rounded-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-100 flex-shrink-0 ${
             copied 
               ? 'text-green-600 bg-green-50' 
               : 'text-slate-300 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 hover:text-indigo-600 hover:bg-indigo-50'
@@ -84,19 +84,49 @@ const CopyableTag: React.FC<{ text: string }> = ({ text }) => {
 const SummaryDisplay: React.FC<SummaryDisplayProps> = ({ data, generationTime }) => {
   const hasTradeDetails = !!data.tradeDetails;
 
+  // Header Copy helper
+  const copyText = (text: string) => {
+    navigator.clipboard.writeText(text);
+  };
+
   return (
     <div className="space-y-6 animate-fade-in">
       
       {/* Header Card */}
       <div className="bg-gradient-to-br from-indigo-600 to-violet-700 rounded-2xl p-8 text-white shadow-lg">
-        <div className="flex items-center space-x-2 mb-2 opacity-80">
+        <div className="flex items-center space-x-2 mb-6 opacity-80">
           <FileTextIcon className="w-5 h-5" />
           <span className="text-sm font-medium uppercase tracking-wider">{data.category}</span>
         </div>
-        <h2 className="text-3xl font-bold mb-4 leading-tight">{data.documentTitle}</h2>
-        <p className="text-indigo-100 text-lg leading-relaxed">
-          {data.executiveSummary}
-        </p>
+        
+        {/* Only show Title if NOT a trade document (Trade docs hide title to focus on LC/Applicant) */}
+        {!hasTradeDetails && (
+          <h2 className="text-3xl font-bold mb-4 leading-tight">{data.documentTitle}</h2>
+        )}
+        
+        {/* Simplified Header Content for Trade Docs */}
+        {hasTradeDetails ? (
+           <div className="flex flex-col md:flex-row gap-8 mt-2">
+             <div>
+                <p className="text-indigo-200 text-xs uppercase tracking-wider font-semibold mb-1">LC Number</p>
+                <div className="flex items-center gap-2 group cursor-pointer" onClick={() => copyText(data.tradeDetails?.lcNumber || '')}>
+                  <p className="text-3xl font-mono font-bold tracking-tight">{data.tradeDetails?.lcNumber || 'N/A'}</p>
+                  {data.tradeDetails?.lcNumber && <CopyIcon className="w-5 h-5 text-indigo-300 opacity-0 group-hover:opacity-100 transition-opacity" />}
+                </div>
+             </div>
+             <div>
+                <p className="text-indigo-200 text-xs uppercase tracking-wider font-semibold mb-1">Applicant</p>
+                <div className="flex items-center gap-2 group cursor-pointer" onClick={() => copyText(data.tradeDetails?.applicant || '')}>
+                  <p className="text-2xl font-medium">{data.tradeDetails?.applicant || 'N/A'}</p>
+                   {data.tradeDetails?.applicant && <CopyIcon className="w-5 h-5 text-indigo-300 opacity-0 group-hover:opacity-100 transition-opacity" />}
+                </div>
+             </div>
+           </div>
+        ) : (
+          <p className="text-indigo-100 text-lg leading-relaxed">
+            {data.executiveSummary}
+          </p>
+        )}
       </div>
 
       {/* Compliance Check Section (Only if applicable) */}
@@ -200,7 +230,7 @@ const SummaryDisplay: React.FC<SummaryDisplayProps> = ({ data, generationTime })
                    <DetailRow label="Bond Licence" value={data.tradeDetails.bondLicenceNumber} isCode />
                    <DetailRow label="BOI No" value={data.tradeDetails.boiNumber} isCode />
                    
-                   <DetailRow label="Discrepancy / Payment Fee" value={data.tradeDetails.discrepancyFee} />
+                   <DetailRow label="Discrepancy / Payment Fee" value={data.tradeDetails.discrepancyFee} multiline={true} />
                    
                    {data.tradeDetails.hsCodes && data.tradeDetails.hsCodes.length > 0 && (
                      <div className="flex flex-col py-2 border-b border-slate-50 last:border-0">

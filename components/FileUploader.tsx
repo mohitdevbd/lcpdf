@@ -1,3 +1,4 @@
+
 import React, { useCallback, useState } from 'react';
 import { UploadCloudIcon, FileTextIcon, XIcon } from './Icons';
 import { FileData } from '../types';
@@ -62,6 +63,22 @@ const FileUploader: React.FC<FileUploaderProps> = ({ onFileSelect, selectedFile 
     setError(null);
   };
 
+  const renderPreview = () => {
+    if (!selectedFile || !selectedFile.mimeType.startsWith('image/')) return null;
+
+    const src = `data:${selectedFile.mimeType};base64,${selectedFile.base64}`;
+
+    return (
+      <div className="w-full h-64 md:h-80 bg-slate-100 rounded-xl border border-slate-200 flex items-center justify-center p-4 relative overflow-hidden">
+        <img 
+          src={src} 
+          alt="Preview" 
+          className="h-full w-full object-contain rounded-lg"
+        />
+      </div>
+    );
+  };
+
   return (
     <div className="w-full">
       {!selectedFile ? (
@@ -95,25 +112,31 @@ const FileUploader: React.FC<FileUploaderProps> = ({ onFileSelect, selectedFile 
           </div>
         </div>
       ) : (
-        <div className="relative flex items-center p-4 bg-white border border-indigo-200 rounded-xl shadow-sm">
-          <div className="p-3 bg-indigo-100 text-indigo-600 rounded-lg mr-4">
-            <FileTextIcon className="w-6 h-6" />
+        <div className="space-y-4 animate-fade-in">
+          {/* File Preview Container - Only for images */}
+          {renderPreview()}
+
+          {/* File Info Bar */}
+          <div className="relative flex items-center p-4 bg-white border border-indigo-200 rounded-xl shadow-sm">
+            <div className="p-3 bg-indigo-100 text-indigo-600 rounded-lg mr-4">
+              <FileTextIcon className="w-6 h-6" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium text-slate-900 truncate">
+                {selectedFile.file.name}
+              </p>
+              <p className="text-xs text-slate-500">
+                {(selectedFile.file.size / 1024 / 1024).toFixed(2)} MB
+              </p>
+            </div>
+            <button
+              onClick={removeFile}
+              className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-colors"
+              aria-label="Remove file"
+            >
+              <XIcon className="w-5 h-5" />
+            </button>
           </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-slate-900 truncate">
-              {selectedFile.file.name}
-            </p>
-            <p className="text-xs text-slate-500">
-              {(selectedFile.file.size / 1024 / 1024).toFixed(2)} MB
-            </p>
-          </div>
-          <button
-            onClick={removeFile}
-            className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-colors"
-            aria-label="Remove file"
-          >
-            <XIcon className="w-5 h-5" />
-          </button>
         </div>
       )}
     </div>

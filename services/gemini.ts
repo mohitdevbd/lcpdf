@@ -140,14 +140,17 @@ export const generateSummary = async (
     2. **COMPLIANCE VERIFICATION (Populate 'tradeCompliance')**:
        If the document appears to be a Proforma Invoice or Export Contract, perform these checks:
        
-       **Date Extraction & Normalization:**
-       - Search the entire document for these specific dates: 
-         1. Export Contract Date (Date associated with the Export Contract Number)
-         2. Date of Issue (Proforma Invoice Date)
-         3. Latest Shipment Date
-         4. Date of Expiry
-       - Handle various formats (e.g., "25th Dec 2023", "12/25/23", "2023-12-25", "Dec 25, 2023", "25.12.2023").
-       - **IMPORTANT**: Convert all extracted dates to **'DD/MM/YYYY'** format (e.g., 14/12/2025) for the final output.
+       **Date Extraction & Normalization Rules:**
+       - **CRITICAL - 6-DIGIT DATE PARSING (e.g., 251124)**:
+         - **SWIFT/Banking Standard**: In messages like MT700, dates are typically **YYMMDD** (Year-Month-Day).
+           - Example: '251124' should be read as **Year: 2025, Month: 11, Day: 24** (24th Nov 2025).
+         - **General Rule**: Check the first two digits. If they represent a plausible year (e.g., 23, 24, 25, 26) and the last two digits are a valid day, PREFER **YYMMDD** format.
+         - **DDMMYY Check**: Only assume DDMMYY if the first two digits are > 31 OR if the context clearly contradicts YYMMDD.
+       
+       - **Standard formats**: Handle "25th Dec 2023", "12/25/23", "2023-12-25", "Dec 25, 2023".
+       - **Ambiguity**: For "xx/xx/xxxx", prefer **DD/MM/YYYY** over MM/DD/YYYY unless US context is explicit.
+       
+       - **OUTPUT FORMAT**: Convert ALL extracted dates to **'DD/MM/YYYY'** format (e.g., 24/11/2025) for the final JSON output.
        
        **Verification Rules:**
        
