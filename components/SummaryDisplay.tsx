@@ -233,6 +233,7 @@ const SummaryDisplay: React.FC<SummaryDisplayProps> = ({ data, generationTime })
                   <DetailRow label="Issuing Bank BIN" value={data.tradeDetails.issuingBankBin} isCode />
                   <DetailRow label="Value" value={data.tradeDetails.amountAndCurrency} />
                   <DetailRow label="Drafts At" value={data.tradeDetails.draftsAt} />
+                  <DetailRow label="Reimbursement Charges" value={data.tradeDetails.reimbursementCharges} multiline={true} />
                 </div>
 
                 {/* Column 3 */}
@@ -258,6 +259,13 @@ const SummaryDisplay: React.FC<SummaryDisplayProps> = ({ data, generationTime })
                      </div>
                    )}
                 </div>
+
+                {/* Clause 71D Section - Full width within the highlights card */}
+                {data.tradeDetails.clause71D && (
+                   <div className="md:col-span-2 lg:col-span-3 mt-4 pt-4 border-t border-slate-100">
+                      <DetailRow label="Clause 71D (Charges)" value={data.tradeDetails.clause71D} multiline={true} />
+                   </div>
+                )}
 
                 {/* Generic Highlights Backup (if extraction missed specifics but got highlights) */}
                 {data.keyHighlights.length > 0 && (

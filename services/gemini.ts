@@ -51,6 +51,8 @@ const SUMMARY_SCHEMA: Schema = {
         beneficiary: { type: Type.STRING, nullable: true, description: "Beneficiary Name/Company" },
         amountAndCurrency: { type: Type.STRING, nullable: true, description: "Total value with currency (e.g. USD 50,000.00)" },
         discrepancyFee: { type: Type.STRING, nullable: true, description: "Discrepancy fee and payment fee details" },
+        reimbursementCharges: { type: Type.STRING, nullable: true, description: "Reimbursement charges details" },
+        clause71D: { type: Type.STRING, nullable: true, description: "Details from Clause 71D (Charges)" },
         hsCodes: { type: Type.ARRAY, items: { type: Type.STRING }, nullable: true, description: "List of HS Codes found" },
         draftsAt: { type: Type.STRING, nullable: true, description: "Payment terms e.g. 'AT SIGHT', '90 DAYS FROM B/L'." },
         ircNumber: { type: Type.STRING, nullable: true, description: "Import Registration Certificate (IRC) Number" },
@@ -126,15 +128,10 @@ export const generateSummary = async (
        - Value (Amount & Currency)
        - Drafts at (Payment Terms, e.g., "AT SIGHT", "90 DAYS")
        - Regulatory Numbers: 
-         - IRC No
-         - ERC No
-         - TIN No
-         - VAT Reg No
-         - BIN (Applicant's)
-         - Issuing Bank's BIN
-         - Bond Licence No
-         - BOI No
+         - IRC No, ERC No, TIN No, VAT Reg No, BIN (Applicant's), Issuing Bank's BIN, Bond Licence No, BOI No
        - Discrepancy and Payment fee instructions
+       - Reimbursement Charges (Look for details about reimbursement fees/charges)
+       - Clause 71D (Look for "71D" or "Charges" clause - extract the full text)
        - HS Codes (as an array of strings)
 
     2. **COMPLIANCE VERIFICATION (Populate 'tradeCompliance')**:

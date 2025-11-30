@@ -4,6 +4,15 @@ export enum InputMode {
   FILE = 'FILE'
 }
 
+export interface ProcessingResult {
+  fileId: string;
+  fileName?: string;
+  status: 'idle' | 'generating' | 'success' | 'error';
+  data?: StructuredSummary;
+  error?: string;
+  generationTime?: number;
+}
+
 export interface ComplianceRule {
   ruleName: string;
   passed: boolean;
@@ -33,6 +42,8 @@ export interface TradeDetails {
   beneficiary?: string;
   amountAndCurrency?: string;
   discrepancyFee?: string;
+  reimbursementCharges?: string;
+  clause71D?: string;
   hsCodes?: string[];
   draftsAt?: string;
   ircNumber?: string;
@@ -58,6 +69,7 @@ export interface StructuredSummary {
 }
 
 export interface FileData {
+  id: string;
   file: File;
   base64: string;
   mimeType: string;
