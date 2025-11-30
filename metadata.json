@@ -1,5 +1,5 @@
 {
   "name": "DocuSummarizer AI",
-  "description": "A smart tool to extract key details and generate structured summaries from text, PDFs, and images using Gemini 2.5 Flash.",
+  "description": "Free AI tool to extract key details and generate structured summaries from text, PDFs, and images. Features trade finance document verification and OCR.",
   "requestFramePermissions": []
 }

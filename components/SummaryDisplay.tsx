@@ -9,14 +9,14 @@ interface SummaryDisplayProps {
 }
 
 const SectionCard: React.FC<{ title: string; children: React.ReactNode; colorClass: string }> = ({ title, children, colorClass }) => (
-  <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden h-full">
-    <div className={`px-6 py-3 border-b border-slate-100 font-semibold text-sm tracking-wide uppercase ${colorClass}`}>
+  <section className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden h-full">
+    <h3 className={`px-6 py-3 border-b border-slate-100 font-semibold text-sm tracking-wide uppercase ${colorClass}`}>
       {title}
-    </div>
+    </h3>
     <div className="p-6">
       {children}
     </div>
-  </div>
+  </section>
 );
 
 const DetailRow: React.FC<{ label: string; value?: string | null; isCode?: boolean; multiline?: boolean }> = ({ label, value, isCode, multiline }) => {
@@ -90,10 +90,10 @@ const SummaryDisplay: React.FC<SummaryDisplayProps> = ({ data, generationTime })
   };
 
   return (
-    <div className="space-y-6 animate-fade-in">
+    <article className="space-y-6 animate-fade-in">
       
       {/* Header Card */}
-      <div className="bg-gradient-to-br from-indigo-600 to-violet-700 rounded-2xl p-8 text-white shadow-lg">
+      <header className="bg-gradient-to-br from-indigo-600 to-violet-700 rounded-2xl p-8 text-white shadow-lg">
         <div className="flex items-center space-x-2 mb-6 opacity-80">
           <FileTextIcon className="w-5 h-5" />
           <span className="text-sm font-medium uppercase tracking-wider">{data.category}</span>
@@ -127,14 +127,14 @@ const SummaryDisplay: React.FC<SummaryDisplayProps> = ({ data, generationTime })
             {data.executiveSummary}
           </p>
         )}
-      </div>
+      </header>
 
       {/* Compliance Check Section (Only if applicable) */}
       {data.tradeCompliance && data.tradeCompliance.isTradeDocument && (
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+        <section className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden" aria-label="Trade Compliance Verification">
           <div className="px-6 py-3 border-b border-slate-100 font-semibold text-sm tracking-wide uppercase text-blue-700 bg-blue-50 flex items-center space-x-2">
             <ShieldCheckIcon className="w-5 h-5" />
-            <span>Trade Document Verification</span>
+            <h3>Trade Document Verification</h3>
           </div>
           <div className="p-6 space-y-6">
             {/* Rules Checklist */}
@@ -170,26 +170,41 @@ const SummaryDisplay: React.FC<SummaryDisplayProps> = ({ data, generationTime })
                   <h4 className="text-sm font-medium text-slate-500 uppercase tracking-wider">Verification Data</h4>
                </div>
                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  {/* Export Contract Date: Primary from Compliance Details */}
                   <div className="bg-slate-50 p-3 rounded-lg">
                     <span className="text-xs text-slate-400 block mb-1">Export Contract</span>
-                    <span className="font-medium text-slate-800 text-sm">{data.tradeCompliance.extractedDetails.exportContractDate || "N/A"}</span>
+                    <span className="font-medium text-slate-800 text-sm">
+                      {data.tradeCompliance.extractedDetails.exportContractDate || "N/A"}
+                    </span>
                   </div>
+                  
+                  {/* Date of Issue: Fallback to tradeDetails if missing in compliance details */}
                   <div className="bg-indigo-50 p-3 rounded-lg border border-indigo-100">
                     <span className="text-xs text-indigo-400 block mb-1">Date of Issue</span>
-                    <span className="font-medium text-indigo-900 text-sm">{data.tradeCompliance.extractedDetails.proformaInvoiceDate || "N/A"}</span>
+                    <span className="font-medium text-indigo-900 text-sm">
+                      {data.tradeCompliance.extractedDetails.proformaInvoiceDate || data.tradeDetails?.dateOfIssue || "N/A"}
+                    </span>
                   </div>
+                  
+                  {/* Latest Shipment: Fallback to tradeDetails if missing */}
                   <div className="bg-slate-50 p-3 rounded-lg">
                     <span className="text-xs text-slate-400 block mb-1">Latest Shipment</span>
-                    <span className="font-medium text-slate-800 text-sm">{data.tradeCompliance.extractedDetails.latestShipmentDate || "N/A"}</span>
+                    <span className="font-medium text-slate-800 text-sm">
+                      {data.tradeCompliance.extractedDetails.latestShipmentDate || data.tradeDetails?.latestShipmentDate || "N/A"}
+                    </span>
                   </div>
+                  
+                  {/* Expiry Date: Fallback to tradeDetails if missing */}
                   <div className="bg-slate-50 p-3 rounded-lg">
                     <span className="text-xs text-slate-400 block mb-1">Expiry Date</span>
-                    <span className="font-medium text-slate-800 text-sm">{data.tradeCompliance.extractedDetails.expiryDate || "N/A"}</span>
+                    <span className="font-medium text-slate-800 text-sm">
+                      {data.tradeCompliance.extractedDetails.expiryDate || data.tradeDetails?.expiryDate || "N/A"}
+                    </span>
                   </div>
                </div>
             </div>
           </div>
-        </div>
+        </section>
       )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -331,7 +346,7 @@ const SummaryDisplay: React.FC<SummaryDisplayProps> = ({ data, generationTime })
       </div>
 
       {/* Footer Info */}
-      <div className="text-center text-xs text-slate-400 pt-4 flex items-center justify-center space-x-3">
+      <footer className="text-center text-xs text-slate-400 pt-4 flex items-center justify-center space-x-3">
         <div className="flex items-center space-x-1">
            <SparklesIcon className="w-3 h-3" />
            <span>Developed by Shikander Sarker Mohit</span>
@@ -342,8 +357,8 @@ const SummaryDisplay: React.FC<SummaryDisplayProps> = ({ data, generationTime })
             <span>Generated in {(generationTime / 1000).toFixed(1)}s</span>
           </>
         )}
-      </div>
-    </div>
+      </footer>
+    </article>
   );
 };
 

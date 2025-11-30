@@ -152,6 +152,8 @@ export const generateSummary = async (
        
        - **OUTPUT FORMAT**: Convert ALL extracted dates to **'DD/MM/YYYY'** format (e.g., 24/11/2025) for the final JSON output.
        
+       - **DATA CONSISTENCY**: Ensure 'tradeCompliance.extractedDetails' (proformaInvoiceDate, expiryDate, etc.) contains the exact same date values as extracted in 'tradeDetails'. Do not leave them NULL if the data exists in 'tradeDetails'.
+
        **Verification Rules:**
        
        - **Rule "Export Contract Sequence"**: 
