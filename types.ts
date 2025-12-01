@@ -35,6 +35,7 @@ export interface TradeCompliance {
 export interface TradeDetails {
   lcNumber?: string;
   exportContractNumber?: string;
+  proformaInvoiceNumber?: string;
   dateOfIssue?: string;
   expiryDate?: string;
   latestShipmentDate?: string;

@@ -44,6 +44,7 @@ const SUMMARY_SCHEMA: Schema = {
       properties: {
         lcNumber: { type: Type.STRING, nullable: true, description: "Letter of Credit Number" },
         exportContractNumber: { type: Type.STRING, nullable: true, description: "Export Contract Number or LC Reference Number (e.g. EXPORT CONT./LC. NO)" },
+        proformaInvoiceNumber: { type: Type.STRING, nullable: true, description: "Proforma Invoice Number (PI No.)" },
         dateOfIssue: { type: Type.STRING, nullable: true },
         expiryDate: { type: Type.STRING, nullable: true },
         latestShipmentDate: { type: Type.STRING, nullable: true },
@@ -120,6 +121,7 @@ export const generateSummary = async (
        If this is a trade document, extract the following into the 'tradeDetails' object:
        - LC Number (Document Number)
        - Export Contract/LC Number (Look for "EXPORT CONT./LC. NO." or similar)
+       - Proforma Invoice Number (Look for "PI NO", "Proforma Invoice No", or similar)
        - Date of Issue (Format: DD/MM/YYYY)
        - Expiry Date (Format: DD/MM/YYYY)
        - Latest Shipment Date (Format: DD/MM/YYYY)

@@ -221,6 +221,7 @@ const SummaryDisplay: React.FC<SummaryDisplayProps> = ({ data, generationTime })
                 <div className="space-y-1">
                   <DetailRow label="LC Number" value={data.tradeDetails.lcNumber} />
                   <DetailRow label="Export Cont./LC No" value={data.tradeDetails.exportContractNumber} />
+                  <DetailRow label="Proforma Invoice No" value={data.tradeDetails.proformaInvoiceNumber} />
                   <DetailRow label="Date of Issue" value={data.tradeDetails.dateOfIssue} />
                   <DetailRow label="Expiry Date" value={data.tradeDetails.expiryDate} />
                   <DetailRow label="Latest Shipment Date" value={data.tradeDetails.latestShipmentDate} />
